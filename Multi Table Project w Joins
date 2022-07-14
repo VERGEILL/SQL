@@ -1,0 +1,42 @@
+--PROJECT PURPOSE: Create multiple tables for joins and query.--
+--TABLE ONE: Famous People From NC--
+
+CREATE TABLE Famous_People_From_NC (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Birth_Year INTEGER, Occupation TEXT, Location TEXT);
+
+INSERT INTO Famous_People_From_NC (Name, Birth_Year, occupation, Location)
+    VALUES ('Nina Simone', 1933, 'Singer', 'Tryon');
+INSERT INTO Famous_People_From_NC (Name, Birth_Year, occupation, Location)
+    VALUES ('Andy Griffith', 1926, 'Actor', 'Mount Airy');
+INSERT INTO Famous_People_From_NC (Name, Birth_Year, occupation, Location)
+    VALUES ('Michael C. Hall', 1971, 'Actor', 'Raleigh');
+INSERT INTO Famous_People_From_NC (Name, Birth_Year, occupation, Location)
+    VALUES ('Randy Travis', 1959, 'Singer', 'Marshville');
+INSERT INTO Famous_People_From_NC (Name, Birth_Year, occupation, Location)
+    VALUES ('Aldis Hodge', 1986, 'Actor', 'Jacksonville');
+INSERT INTO Famous_People_From_NC (Name, Birth_Year, occupation, Location)
+    VALUES ('John Coltrane', 1926, 'Singer', 'Hamlet');
+    
+--TABLE TWO: Hobbies of Famous People--
+
+CREATE TABLE Famous_Hobbies (id INTEGER PRIMARY KEY AUTOINCREMENT, famous_id INTEGER, hobby_name TEXT, years_practiced INTEGER);
+
+INSERT INTO Famous_Hobbies (famous_id, hobby_name, years_practiced)
+VALUES (1,'Singing', 7);
+INSERT INTO Famous_Hobbies (famous_id, hobby_name, years_practiced)
+VALUES (2,'Acting', 23);
+INSERT INTO Famous_Hobbies (famous_id, hobby_name, years_practiced)
+VALUES (3,'Acting', 17);
+INSERT INTO Famous_Hobbies (famous_id, hobby_name, years_practiced)
+VALUES (4,'Singing', 32);
+INSERT INTO Famous_Hobbies (famous_id, hobby_name, years_practiced)
+VALUES (5,'Acting', 11);
+INSERT INTO Famous_Hobbies (famous_id, hobby_name, years_practiced)
+VALUES (6,'Singing', 47);
+
+--JOIN TABLES and Query Shared Data--
+
+SELECT *
+FROM Famous_People_From_NC F
+JOIN Famous_Hobbies H
+ON F.id=H.famous_id
+ORDER BY Birth_Year DESC
