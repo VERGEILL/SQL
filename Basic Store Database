@@ -1,0 +1,27 @@
+--Create a simple store database--
+
+
+
+
+CREATE TABLE BumbaStore (id INTEGER PRIMARY KEY, name TEXT, quantity INTEGER, color TEXT, sold INTEGER, price INTEGER);
+
+INSERT INTO BumbaStore VALUES (1, 'Basic Tee', 25, 'blue', 47, 19.99);
+INSERT INTO BumbaStore VALUES (2, 'Basic Tee', 25, 'red', 47, 21.99);
+INSERT INTO BumbaStore VALUES (3, 'Basic Tee', 25, 'green', 32, 22.99);
+INSERT INTO BumbaStore VALUES (4, 'Basic Tee', 25, 'yellow', 62, 33.99);
+INSERT INTO BumbaStore VALUES (5, 'Basic Tee', 25, 'grey', 27, 19.99);
+INSERT INTO BumbaStore VALUES (6, 'Basic Sleeve', 25, 'blue', 21, 19.99);
+INSERT INTO BumbaStore VALUES (7, 'Basic Sleeve', 25, 'red', 21, 19.99);
+INSERT INTO BumbaStore VALUES (8, 'Basic Sleeve', 25, 'green', 21, 19.99);
+INSERT INTO BumbaStore VALUES (9, 'Basic Sleeve', 25, 'yellow', 21, 19.99);
+INSERT INTO BumbaStore VALUES (10, 'Basic Sleeve', 25, 'grey', 21, 19.99);
+INSERT INTO BumbaStore VALUES (11, 'Basic cutoffs', 25, 'blue', 21, 21.99);
+INSERT INTO BumbaStore VALUES (12, 'Basic cutoffs', 25, 'red', 21, 21.99);
+INSERT INTO BumbaStore VALUES (13, 'Basic cutoffs', 25, 'green', 21, 21.99);
+INSERT INTO BumbaStore VALUES (14, 'Basic cutoffs', 25, 'yellow', 21, 19.99);
+INSERT INTO BumbaStore VALUES (15, 'Basic cutoffs', 25, 'grey', 21, 19.99);
+
+--display the database ordered by price. 
+SELECT * FROM BumbaStore
+ORDER BY price desc;
+
