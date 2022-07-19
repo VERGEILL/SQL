@@ -58,3 +58,35 @@ FROM chinook.employees emp
 JOIN chinook.Customers cust ON cust.SupportRepId =emp.EmployeeId
 JOIN chinook.Invoices inv ON Inv.CustomerID = cust.CustomerID;
 --ANSWER: Returned 412 results on Sales Agents and invoiceID's associated with. Required double JOIN.--
+
+--7) Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.--
+SELECT inv.Total, cust.FirstName, cust.LastName, cust.Country, emp.FirstName, emp.LastName
+FROM customers cust
+JOIN employees emp ON cust.SupportRepID = emp.EmployeeId
+JOIN invoices inv ON cust.customerID = inv.customerID; 
+--ANSWER: Returned 412 results which provided each of the requested data. 
+
+--8)How many Invoices were there in 2009?--
+
+SELECT COUNT(InvoiceID)
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2009-01-01 00:00:00' AND '2009-12-31 00:00:00';
+--ANSWER: Results of query returned 83--
+
+--9) What are the total sales for 2009?
+SELECT SUM(Total)
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2009-01-01 00:00:00' AND '2009-12-31 00:00:00';
+--ANSWER: Total sales for 2009 returned $449.46--
+
+--10) Write a query that includes the purchased track name with each invoice line item.--
+SELECT t.Name, i.InvoiceLineId
+FROM chinook.Invoice_items i
+JOIN chinook.Tracks t ON i.TrackId = t.TrackId;
+--ANSWER: Results returned 1000 individual track names and the invoice line item #.--
+
+--11) Write a query that includes the purchased track name AND artist name with each invoice line item.--
+SELECT t.Name, t.Composer, i.InvoiceLineId
+FROM chinook.Invoice_items i 
+JOIN chinook.Tracks t ON i.TrackId = t.TrackId;
+--ANSWER: 1000 returned results with requested data.--
