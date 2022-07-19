@@ -1,0 +1,60 @@
+SELECT *
+FROM chinook.albums;
+
+Select * 
+FROM chinook.customers;
+
+--Final Project (new DB)--query to answer 14 questions--
+--1) Show Customers (their full names, customer ID, and country) who are not in the US.--
+
+SELECT FirstName, LastName, CustomerId, Country
+FROM chinook.customers:
+WHERE country <> 'USA';
+--ANSWER: Query returned 46 results with full names, customer id, and shower all customers not in the US.--
+
+--2) Show only the Customers from Brazil--
+SELECT FirstName, LastName, CustomerId, Country
+FROM chinook.customers:
+WHERE country LIKE 'Brazil';
+--ANSWERL Query returned 5 results for cusstomers from Brazil. Could have used wildcard %% to open up results for any misspellings but info is accurate as is. 
+
+--3) Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.--
+SELECT *
+FROM chinook.invoices;
+
+SELECT DISTINCT cust.FirstName, cust.LastName, inv.InvoiceId, inv.InvoiceDate, inv.BillingCountry
+FROM chinook.customers cust
+INNER JOIN chinook.invoices inv
+ON cust.CustomerId = inv.CustomerId
+WHERE cust.country LIKE 'Brazil';
+
+--ANSWER: Question required a JOIN between customer and invoice tables. Query identified 35 DISTINCT customerID's and information requested who are from Brazil.--
+
+--4)Show the Employees who are Sales Agents--
+
+SELECT FirstName, LastName, Title
+FROM chinook.employees
+WHERE title IS 'Sales Support Agent';
+--ANSWER: Query resulted in zero. Evaluated TITLE positions and found zero 'Sales Agents' but instead termed 'Sales Support Agent'. Re-queried with proper term. 3 results. 
+
+--5) Find a unique/distinct list of billing countries from the Invoice table.--
+
+SELECT DISTINCT BillingCountry
+FROM invoices;
+--ANSWER: Returned list of 24 unique and distinct Billing Countries from the database. 
+
+--6) Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.--
+SELECT *
+FROM customers;
+--Query used to identify SupportRepID
+
+SELECT *
+FROM chinook.employees;
+--It appears as if SupportRepID matches to EmployeeID. Will use this as ON for any JOIN. 
+
+
+SELECT LastName, FirstName, InvoiceID 
+FROM chinook.employees emp
+JOIN chinook.Customers cust ON cust.SupportRepId =emp.EmployeeId
+JOIN chinook.Invoices inv ON Inv.CustomerID = cust.CustomerID;
+--ANSWER: Returned 412 results on Sales Agents and invoiceID's associated with. Required double JOIN.--
