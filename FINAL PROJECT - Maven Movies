@@ -1,0 +1,110 @@
+1) Send over the managers' names at each store, with the full address of each property (street address, district, city, and country please).
+
+SELECT 
+staff.first_name,
+staff.last_name,
+address.address,
+address.district,
+city.city,
+country.country
+FROM staff
+    INNER JOIN store ON staff.store_id=store.store_id
+    INNER JOIN address ON store.address_id=address.address_id
+    INNER JOIN city ON address.city_id=city.city_id
+    INNER JOIN country ON city.country_id=country.country_id
+
+2) Pull together a list of each inventory item you have stocked, including the store_id number, the inventory_id, the name of the film, the film's rating, its rental rate, and replacement cost. 
+
+SELECT
+inv.store_id,
+inv.inventory_id,
+film.title,
+film.rating,
+film.rental_rate,
+film.replacement_cost
+FROM inventory inv
+	LEFT JOIN film ON inv.film_id=film.film_id
+
+
+3) We would like to know how many inventory items you have with each rating at each store.
+
+SELECT DISTINCT store.store_id, film.rating, COUNT(inv.inventory_id) AS 'Inventory' 
+FROM film
+    INNER JOIN inventory inv ON film.film_id=inv.film_id
+    INNER JOIN store ON inv.store_id=store.store_id
+GROUP BY store.store_id, film.rating
+ORDER BY store.store_id
+
+4) We would like to see the number of films, average replacement cost, and total replacement cost sliced by store and film category. 
+
+SELECT 
+inv.store_id, 
+cat.category_id, 
+COUNT(film.film_id) AS 'Number of films', 
+AVG(film.replacement_cost) AS 'AVG Replacement Cost', 
+SUM(film.replacement_cost) AS 'Total Replacement Cost'
+FROM film
+	INNER JOIN inventory inv ON film.film_id=inv.film_id
+	INNER JOIN film_category cat ON inv.film_id=cat.film_id
+GROUP BY inv.store_id, cat.category_id
+ORDER BY inv.store_id, cat.category_id
+
+5) Provide a list of all customer names, which store they go to, whether or not they are currently active, and their full address--street address, city, and country. 
+
+SELECT 
+cust.first_name,
+cust.last_name,
+CASE
+    WHEN cust.active = 1 THEN 'Yes'
+    WHEN cust.active = 0 THEN 'No'
+    ELSE 'Check logic'
+END AS Active,
+city.city,
+country.country
+FROM customer cust
+    LEFT JOIN address ON cust.address_id=address.address_id
+    LEFT JOIN city ON address.city_id=city.city_id
+    LEFT JOIN country ON city.country_id=country.country_id
+
+6) List of customer names, total lifetime rentals, the sum of all payments collected. Also, ordered on total lifetime value and with the most valuable customers at the top of the list. 
+
+SELECT
+cust.first_name,
+cust.last_name,
+COUNT(pay.rental_id) AS 'Total lifetime rentals',
+SUM(pay.amount) AS 'Total Lifetime Value'
+FROM customer cust 
+	LEFT JOIN payment pay ON cust.customer_id=pay.customer_id
+GROUP BY cust.first_name, cust.last_name
+ORDER BY SUM(pay.amount) DESC;
+
+7) List of advisor and investor names but included on one table. Please note whether they are an investor or an advisor, and for the investors, it would be good to include which company they work with. 
+
+SELECT
+'advisor' AS TYPE,
+first_name, last_name, NULL
+FROM advisor
+
+UNION
+
+SELECT
+'investor' AS TYPE,
+first_name, last_name, company_name
+FROM investor
+
+8) Most awarded actors--Of all of the actors with three types of awards, for what % of them do we carry a film? And how about for actors with two types of awards? Same questions. Finally, how about actors with just one award? 
+
+SELECT
+	CASE
+	  WHEN actor_award.awards = 'Emmy, Oscar, Tony ' THEN '3 awards'
+        WHEN actor_award.awards IN ('Emmy, Oscar', 'Emmy, Tony', 'Oscar, Tony') THEN '2 awards'
+        ELSE '1 award'
+	END AS number_of_awards,
+    AVG(CASE WHEN actor_award.actor_id IS NULL THEN 0 ELSE 1 END) AS pct_w_one_film
+FROM actor_award
+GROUP BY 
+	CASE
+	  WHEN actor_award.awards = 'Emmy, Oscar, Tony ' THEN '3 awards'
+        WHEN actor_award.awards IN ('Emmy, Oscar', 'Emmy, Tony', 'Oscar, Tony') THEN '2 awards'
+        ELSE '1 award'
+	END
