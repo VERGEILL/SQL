@@ -1,0 +1,97 @@
+--SQL Project: Traffic Analysis--
+Part One: Analyze Traffic Source
+Assignment 1: Finding Top Traffic Sources
+
+--Client has requested a breakdown of where bulk website sessions are coming from a month into the business. 
+They would like to see a breakdown by UTM source, campaign, and referring domain. (Date not to exceed April 12th, 2012)
+
+SELECT
+	utm_source,
+    utm_campaign,
+    http_referer,
+    COUNT(DISTINCT website_session_id) AS sessions
+FROM website_sessions
+WHERE created_at < '2012-04-12'
+GROUP BY
+	1, 2, 3
+ORDER BY 
+	4 DESC;
+
+Solution: Answer is correct and provided client data as requested. 
+
+Part Two: Traffic Source Conversion Rate
+Assignment 2: Determine Traffic Source Conversion Rate
+
+--Client would like analyst to calculate the conversion rate (CVR) from session to order. They need AT LEAST a CVR of 4% to make the numbers work. If lower
+they will need to decrease bids. They would like a specific search on their major traffic source = gsearch nonbrand. 
+
+SELECT 
+	COUNT(DISTINCT website_sessions.website_session_id) AS sessions,
+	COUNT(DISTINCT orders.order_id) AS orders,
+      COUNT(DISTINCT orders.order_id)/COUNT(DISTINCT website_sessions.website_session_id) AS session_to_order_conv_rate
+FROM website_sessions
+	LEFT JOIN orders
+    ON website_sessions.website_session_id=orders.website_session_id
+WHERE website_sessions.created_at < '2012-04-14'
+	AND utm_source = 'gsearch'
+      AND utm_campaign = 'nonbrand';
+
+Solution: Analyst provided answer with results at 2% CVR. Client is excited as they now know they need to lower bid to save the company money. 
+
+Part Three: Bid Optimization
+Assignment 3: Bid Optimization and Trend Analysis
+
+--Based on our previous conversion rate analysis--the client bid down gsearch nonbrand from 2012-04-15. It has been just shy of a month. The client would like you
+to pull 'gsearch nobrand' trended session volume, by week, to see if the bid changes have caused volume to drop at all. 
+
+SELECT
+	MIN(DATE(created_at)) AS week_started_at,
+	COUNT(DISTINCT website_session_id) AS sessions
+FROM website_sessions
+WHERE created_at < '2012-05-12'
+	AND utm_source = 'gsearch'
+	AND utm_campaign = 'nonbrand'
+GROUP BY
+	YEAR(created_at),
+      WEEK(created_at)
+
+**Note--Year and week utilized in GROUP BY were used in SELECT but then commented out.**
+
+SOLUTION - Based on Tom's request and bid down then there has been an impact to the volume. It would appear that nonbrand traffic is sensitive to bid traffic. 
+
+Part Four: Traffic Source Bid Optimization
+Assignment 4: Bid Optimization for Paid Traffic
+
+--The client was attempting to use the site from their mobile device the other day. The experience was not great. The client would like us to pull conversion rates from session to order, by device type. 
+If desktop performance is better than on mobile--we may need to look at that regarding volume. 
+
+SELECT 
+website_sessions.device_type,  
+	COUNT(DISTINCT website_sessions.website_session_id) AS sessions,
+	COUNT(DISTINCT orders.order_id) AS orders,
+	COUNT(DISTINCT orders.order_id)/COUNT(DISTINCT website_sessions.website_session_id) AS conv_rt
+FROM website_sessions 
+	LEFT JOIN orders 
+		ON orders.website_session_id = website_sessions.website_session_id
+WHERE website_sessions.created_at < '2012-05-11' AND utm_source = 'gsearch' AND utm_campaign = 'nonbrand'
+GROUP BY 1;
+
+Solution - Conversion rate is much higher on the desktop than the mobile platform. Based on analysis--we should not be running the same bids for device type. 
+
+Part Five: Trending with Granular Segments
+Assignment 5: Trending with Granular Segments
+
+--The client bid their 'gsearch' and 'nonbrand' desktop campaigns up on 2012-05-19. They would like weekly trends for both desktop and mobile so they can see the impact on 
+volume. We can use 2012-04-15 as a baseline. 
+
+SELECT
+    MIN(DATE(created_at)) AS week_start_date,
+    COUNT(DISTINCT CASE WHEN device_type = 'desktop' THEN website_session_id  ELSE NULL END) AS dtop_sessions,
+    COUNT(DISTINCT CASE WHEN device_type = 'mobile' THEN website_session_id ELSE NULL END) AS mob_sessions
+FROM website_sessions
+WHERE website_sessions.created_at < '2012-06-09' AND website_sessions.created_at > '2012-04-15' AND utm_source = 'gsearch' AND utm_campaign = 'nonbrand'
+GROUP BY 
+	YEAR(created_at),
+	WEEK(created_at);
+
+Solution - Looks like the desktop optimization and funds spent have increased the number of sessions as expected. 
